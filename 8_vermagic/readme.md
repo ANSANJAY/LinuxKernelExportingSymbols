@@ -44,3 +44,4 @@ This composite string ensures that a module is not only matched to a kernel vers
 
 Imagine you're trying to fit a puzzle piece from one puzzle box into a different puzzle. It might not fit, or even if it does, it might look out of place or break the whole picture. That's similar to what `vermagic` does. It ensures that each kernel module "puzzle piece" perfectly fits the kernel "puzzle" it was designed for. If they don't match, the kernel knows not to use that piece.
 
+![](./Screenshot%20from%202023-10-02%2019-36-52.png)

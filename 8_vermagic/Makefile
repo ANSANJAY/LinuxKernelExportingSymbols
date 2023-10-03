@@ -1,5 +1,5 @@
 obj-m := vermagic.o
-obj-m += vermagic1.o
+
 
 all:
 	make -C /lib/modules/`uname -r`/build M=$(PWD) modules

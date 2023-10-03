@@ -1,10 +1,11 @@
 #include <linux/module.h>
 #include <linux/kernel.h>
-#include <linux/vermagic.h>
+#include <linux/utsname.h>
+#define VERMAGIC_STRING "my_vermagic"
 
 static int vermagic_init(void)
 {
-	pr_info("VERMAGIC_STRING = " VERMAGIC_STRING "\n");
+	pr_info("Kernel version = %s\n", utsname()->release);
 	return 0;
 }
 
