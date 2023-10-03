@@ -2,11 +2,25 @@
 
 📘 **Symbol**:
 
-In the realm of programming, a **symbol** refers to an identifier that stands for either data storage (like variables) or sequences of instructions to execute (like functions). Symbols are essentially names given to these particular memory addresses so we can easily reference and manipulate them.
+In the realm of programming, a **symbol** refers to an identifier that stands for either 
+- data storage (like variables) or 
+- sequences of instructions to execute (like functions).
+- Symbols are essentially names given to these particular memory addresses so we can easily reference and manipulate them.
 
 📘 **Symbol Table**:
 
-A **symbol table** is a specialized data structure crafted by the compiler, storing a list of all the symbols utilized in a given program. For the Linux kernel, every built image has an accompanying symbol table. This table is typically found at `/boot/System.map-<linux_version>`, giving you a map of all the kernel symbols' names and their corresponding memory addresses.
+- A **symbol table** is a specialized data structure crafted by the compiler, storing a list of all the symbols utilized in a given program. 
+- For the Linux kernel, every built image has an accompanying symbol table. This table is typically found at `/boot/System.map-<linux_version>`, giving you a map of all the kernel symbols' names and their corresponding memory addresses.
+
+PWD : /boot/
+
+![](./Screenshot%20from%202023-10-02%2019-05-59.png)
+
+- Navigate to  `/boot/System.map-<linux_version>` 
+- For example : `System.map-6.2.15-100.fc36.x86_64`
+- **Only for the built in kernel module**
+
+![](./Screenshot%20from%202023-10-02%2019-04-41.png)
 
 📘 **Exporting Symbols**:
 
@@ -22,11 +36,86 @@ In the Linux kernel, when a new function or variable is declared within a module
 
 - **System.map**: This is a symbol table that contains symbols only for the kernel's built-in modules.
   
+The command you ran:
+
+```sh
+wc -l System.map-6.2.15-100.fc36.x86_64
+```
+
+with the output:
+
+```sh
+202876 System.map-6.2.15-100.fc36.x86_64
+```
+
+indicates that there are **202,876** symbols in the `System.map` file for the Linux kernel version `6.2.15-100.fc36.x86_64`. 
+
+### Context:
+
+- **System.map:** This file maps symbols (function and variable names) to their addresses in memory and is used for debugging and understanding kernel behavior. A specific `System.map` file is typically generated each time the kernel is compiled and is associated with that particular kernel version (hence `6.2.15-100.fc36.x86_64` in the filename).
+
+### Significance:
+
+- **Symbol Count Discrepancy:** The difference in symbol count between `/proc/kallsyms` and `System.map` could be due to several reasons, such as different kernel versions or configurations, or additional modules being loaded (in the case of `/proc/kallsyms`).
+
+- **Use in Debugging:** Much like `/proc/kallsyms`, the `System.map` file is pivotal in debugging kernel issues. If the system panics, having the appropriate `System.map` for the running kernel can help developers symbolically decode stack traces and understand the context of the crash.
+
+### Comparison to `/proc/kallsyms`:
+
+- **Dynamic vs. Static:** While `/proc/kallsyms` can dynamically change (e.g., when modules are loaded or unloaded, reflecting the current running kernel), `System.map` is static, representing the symbols available at the time the kernel was built.
+
+- **Accessibility:** `/proc/kallsyms` usually provides more access to symbols even without the necessity of `System.map` being present, making it especially useful in various live environments.
+
+### Additional Notes:
+
+- **Kernel Debugging:** For kernel debugging, ensure you are using the correct `System.map` for your running kernel. Using a mismatched `System.map` can cause incorrect symbol resolution.
+
+- **Kernel Development:** Developers and kernel hackers often refer to these symbol tables and map files to verify function and variable addresses, ensuring their modifications or modules interact correctly with the kernel.
+
+The symbol count and the specific symbols present would depend on the configuration options chosen when the kernel was compiled and can vary between different kernels and distributions. So, the counts being different between different `System.map` files or between `System.map` and `/proc/kallsyms` are expected.
+
 - **/proc/kallsyms**: This contains symbols for both the kernel's built-in modules and the dynamically loaded modules. It provides a broader view of symbols present in the running kernel.
+
+When you run the command:
+
+```sh
+wc -l /proc/kallsyms
+```
+
+I get the output:
+
+```sh
+293231 /proc/kallsyms
+```
+
+This means there are **293,231** symbols in the kernel symbol table at the time the command was run. Each line in `/proc/kallsyms` represents a single symbol.
+
+### Explanation:
+
+- **Symbols:** In the context of computing and programming, symbols refer to named entities used to identify various elements such as functions, variables, etc., in a program (or in this case, the Linux kernel).
+
+- **/proc/kallsyms:** The file `/proc/kallsyms` provides a view into the kernel's symbol table, which maps addresses to symbol names. It is particularly useful for debugging and development purposes. Each line in this file represents one symbol and typically consists of the following three columns:
+  - **Address:** The memory address of the symbol.
+  - **Type:** A single character that indicates the type or scope of the symbol (e.g., "T" for text/execute sections, "D" for initialized data section, etc.).
+  - **Name:** The name of the symbol.
+
+So, `293,231` symbols signify that the kernel, along with its loaded modules, has this many named entities (like functions and variables) available and usable at that point in time.
+
+### Importance:
+
+- **Debugging:** Developers and system administrators utilize the symbols for debugging kernel crashes and issues. For instance, if the kernel panics, it may log an address which can be looked up in `/proc/kallsyms` to identify the function or variable involved in the crash.
+  
+- **Development:** For developers, especially those working on kernel modules or diving into kernel development, this table aids in understanding and exploring the kernel's functions and data structures.
+
+- **Profiling & Tracing:** Symbols are also crucial for various profiling and tracing tools to correlate addresses to human-readable function names and provide meaningful output.
+
+The exact number of symbols can vary based on the kernel version, configuration, and loaded modules since each of these factors can introduce additional symbols.
+
+![](./Screenshot%20from%202023-10-02%2019-13-25.png)
 
 ---
 
-**Section 2: Technical Interview Questions & Answers**
+**Curiousity**
 
 ❓ **Question 1**: Why might a developer choose to use `EXPORT_SYMBOL_GPL` over `EXPORT_SYMBOL`?
 
@@ -34,7 +123,9 @@ In the Linux kernel, when a new function or variable is declared within a module
 
 ❓ **Question 2**: How can one symbol be present in both `System.map` and `/proc/kallsyms`? 
 
-📝 **Answer**: A symbol will appear in both `System.map` and `/proc/kallsyms` if it's part of the kernel's built-in modules. While `System.map` only contains built-in module symbols, `/proc/kallsyms` includes those along with symbols from dynamically loaded modules.
+📝 **Answer**:
+-  A symbol will appear in both `System.map` and `/proc/kallsyms` if it's part of the kernel's built-in modules. 
+- While `System.map` only contains built-in module symbols, `/proc/kallsyms` includes those along with symbols from dynamically loaded modules.
 
 ❓ **Question 3**: What happens if two modules export the same symbol name?
 
@@ -61,8 +152,6 @@ Imagine you're in a library 📚:
 ------
 
 
-**Section 1: Explain the technical concept**
-
 📘 **/proc/kallsyms and Kernel Symbols**:
 
 The `/proc/kallsyms` file represents the kernel's symbol table. It's a virtual file that gives you insight into the kernel space symbols. It contains the memory addresses of functions, variables, and other symbols, along with their types and names. When developers add or export a new symbol to the kernel, it should be visible in this file.
@@ -74,7 +163,6 @@ By using the `cat` command combined with `grep`, you can quickly check if a part
 
 ---
 
-**Section 2: Technical Interview Questions & Answers**
 
 ❓ **Question 1**: What is the significance of the `/proc/kallsyms` file?
 
@@ -90,7 +178,6 @@ By using the `cat` command combined with `grep`, you can quickly check if a part
 
 ---
 
-**Section 3: Simplify the concept**
 
 💡 **In Simple Words**:
 
