@@ -1,13 +1,10 @@
-
-**Section 1: Explain the technical concept**
-
 📘 **Module Stacking in Linux Kernel**:
 
-Module stacking in the Linux kernel allows for one module to utilize or "stack upon" the functionalities (symbols, functions, variables, etc.) exported by another module. Essentially, one module can rely on and use the functions provided by another module, rather than duplicating code. This allows for more modular and maintainable kernel code, as features or functionalities can be built incrementally atop existing modules.
+Module stacking in the Linux kernel allows for one module to utilize or "stack upon" the functionalities (symbols, functions, variables, etc.) exported by another module. 
+- Essentially, one module can rely on and use the functions provided by another module, rather than duplicating code. 
+- This allows for more modular and maintainable kernel code, as features or functionalities can be built incrementally atop existing modules.
 
 ---
-
-**Section 2: Technical Interview Questions & Answers**
 
 ❓ **Question**: Why is module stacking beneficial in the Linux kernel?
 
@@ -86,15 +83,14 @@ When loading these modules, first load the `myadd_module`, and then the `use_mya
 -----
 
 
-**Section 1: Explain the technical concept**
-
 📘 **Using `modprobe` to Load Kernel Modules with Dependencies**:
 
-`modprobe` is a command in Linux that adds or removes modules from the kernel. Unlike `insmod`, which simply inserts a module without considering dependencies, `modprobe` will automatically load any dependent modules. By creating symbolic links in the `/lib/modules/$(uname -r)/kernel/drivers/misc` directory, you're telling `modprobe` where to find your custom modules. The `depmod` command is then used to calculate module dependencies and create a modules.dep file, which `modprobe` consults.
+- `modprobe` is a command in Linux that adds or removes modules from the kernel. 
+- Unlike `insmod`, which simply inserts a module without considering dependencies, `modprobe` will automatically load any dependent modules.
+- By creating symbolic links in the `/lib/modules/$(uname -r)/kernel/drivers/misc` directory, you're telling `modprobe` where to find your custom modules.
+- The `depmod` command is then used to calculate module dependencies and create a modules.dep file, which `modprobe` consults.
 
 ---
-
-**Section 2: Technical Interview Questions & Answers**
 
 ❓ **Question**: Why is `modprobe` preferred over `insmod` when dealing with modules that have dependencies?
 
@@ -105,8 +101,6 @@ When loading these modules, first load the `myadd_module`, and then the `use_mya
 📝 **Answer**: `depmod` is used to generate a list of module dependencies by examining each module in the `/lib/modules` directory. It creates the `modules.dep` file which `modprobe` uses to determine which modules need to be loaded first.
 
 ---
-
-**Section 3: Simplify the concept**
 
 💡 **In Simple Words**:
 
